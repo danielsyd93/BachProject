@@ -1,5 +1,8 @@
 package BachProject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ilog.concert.*;
 import ilog.cplex.*;
 
@@ -29,12 +32,13 @@ public class SimpleProblem {
 			}
 			model.addMinimize(obj);
 			
+			List<IloRange> constraints = new ArrayList<IloRange>();
 			for(int i = 0; i < m; i++) {
 				IloLinearNumExpr constraint = model.linearNumExpr();
 				for(int j = 0; j < n; j++) {
 					constraint.addTerm(A[i][j], x[j]);
 				}
-				model.addGe(constraint, b[i]);
+				constraints.add(model.addGe(constraint, b[i]));
 			}
 			
 			boolean isSolved = model.solve();
@@ -43,6 +47,19 @@ public class SimpleProblem {
 				System.out.println("obj_val =" 	+ objValue);
 				for(int i = 0; i < n; i++) {
 					System.out.println("x[" + (i+1) + "] =" + model.getValue(x[i]));
+					System.out.println("Reduced cost " + (i+1) + " = " + model.getReducedCost(x[i]));
+				}
+				
+				for(int i = 0; i < m; i++) {
+					double slack = model.getSlack(constraints.get(i));
+					double dual = model.getDual(constraints.get(i));
+					if(slack == 0) {
+						System.out.println("Constraint " + (i+1) + "is binding.");
+					}
+					else {
+						System.out.println("Constraint " + (i+1) + "is non-binding");
+					}
+					System.out.println("Shadow price " + (i+1) + " = " + dual);
 				}
 			}
 			else {
