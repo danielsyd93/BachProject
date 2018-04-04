@@ -41,6 +41,19 @@ public class BaseModel {
 			model.addMinimize(obj);
 			
 			List<IloRange> constraints = new ArrayList<IloRange>();
+			for(int i = 0; i < comm; i++) {
+				IloLinearNumExpr constraint = model.linearNumExpr();
+				for(int j = 0; j < dpi.length; j++) {
+					constraint.addTerm(p, xak[j][i]);
+				}
+				for(int j = 0; j < dpi.length; j++) {
+					constraint.addTerm(n, xak[j][i]);
+				}
+				
+				constraints.add(model.eq(constraint, ))
+			}
+			
+			List<Il	oRange> constraints = new ArrayList<IloRange>();
 			for(int i = 0; i < m; i++) {
 				IloLinearNumExpr constraint = model.linearNumExpr();
 				for(int j = 0; j < n; j++) {
