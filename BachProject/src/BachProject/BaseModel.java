@@ -10,6 +10,7 @@ public class BaseModel {
 
 	public static void main(String[] args) {
 
+
 	}
 	public static void solveModel(int arc, int comm, int vert, double[][] Dik, double[] ua,
 			double[][] Cak, double[] fa, double[][] dpi, double[][] dni) {
@@ -39,19 +40,24 @@ public class BaseModel {
 			}
 			
 			model.addMinimize(obj);
+			int p = 1;
+			int n = -1;
 			
 			List<IloRange> constraints = new ArrayList<IloRange>();
-			for(int i = 0; i < comm; i++) {
-				IloLinearNumExpr constraint = model.linearNumExpr();
-				for(int j = 0; j < dpi.length; j++) {
-					constraint.addTerm(p, xak[j][i]);
-				}
-				for(int j = 0; j < dpi.length; j++) {
-					constraint.addTerm(n, xak[j][i]);
-				}
-				
-				constraints.add(model.eq(constraint, ))
+			for(int z = 0; z < vert; z++) {
+				for(int i = 0; i < comm; i++) {
+					IloLinearNumExpr constraint = model.linearNumExpr();
+					for(int j = 0; j < dpi.length; j++) {
+						constraint.addTerm(p, xak[j][i]);
+					}
+					for(int j = 0; j < dpi.length; j++) {
+						constraint.addTerm(n, xak[j][i]);
+					}
+					constraints.add(model.eq(constraint, Dik[z][i]));
+				}	
 			}
+			
+			
 			
 			List<Il	oRange> constraints = new ArrayList<IloRange>();
 			for(int i = 0; i < m; i++) {
@@ -65,9 +71,9 @@ public class BaseModel {
 			boolean isSolved = model.solve();
 			if(isSolved) {
 				double objValue = model.getObjValue();
-				System.out.println("obj_val =" 	+ objValue);
+				System.out.println("obj_val = " 	+ objValue);
 				for(int i = 0; i < n; i++) {
-					System.out.println("x[" + (i+1) + "] =" + model.getValue(x[i]));
+					System.out.println("x[" + (i+1) + "] = " + model.getValue(x[i]));
 					System.out.println("Reduced cost " + (i+1) + " = " + model.getReducedCost(x[i]));
 				}
 				
