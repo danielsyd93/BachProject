@@ -66,16 +66,20 @@ public class BaseModel {
 			List<IloRange> constraints = new ArrayList<IloRange>();
 			for(int z = 0; z < vert; z++) {
 				for(int i = 0; i < comm; i++) {
+					System.out.println(i);
+					System.out.println(dpi[z].length);
+					System.out.println(dni[z].length);
 					IloLinearNumExpr constraint = model.linearNumExpr();
 					for(int j = 0; j < dpi[z].length; j++) {
 						int parc = (int) dpi[z][j];
-						constraint.addTerm(p, xak[parc][i]);
+						constraint.addTerm(xak[parc-1][i], p);
 					}
 					for(int j = 0; j < dni[z].length; j++) {
 						int narc = (int) dni[z][j];
-						constraint.addTerm(n, xak[narc][i]);
+						constraint.addTerm(xak[narc-1][i], n);
 					}
 					constraints.add(model.addEq(constraint, Dik[z][i]));
+					System.out.println(constraints);
 				}	
 			}
 			for(int i = 0; i < arc; i++) {
