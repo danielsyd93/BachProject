@@ -10,9 +10,9 @@ public class BaseModel {
 
 	public static void main(String[] args) {
 		int arc = 12;
-		int comm = 20;
+		int comm = 7;
 		int vert = 4;
-		double[][] Dik = {{-1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0}, {1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1}};
+		double[][] Dik = {{0,0,0,-20,-10,10,0}, {-15,-5,0,0,10,0,30}, {15,0,-15,20,0,0,0}, {0,5,15,0,0,-10,-30}};
 		double[] ua = {20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
 		double[][] Cak = {{100, 110, 120, 90, 80, 105, 110, 115, 99, 80, 95, 120, 115, 110, 100, 90, 95, 80, 100, 110}, 
 							{105, 120, 100, 90, 90, 115, 80, 125, 80, 80, 95, 120, 115, 110, 100, 90, 95, 80, 100, 110},
@@ -26,7 +26,7 @@ public class BaseModel {
 							{105, 120, 100, 90, 90, 115, 80, 125, 80, 80, 95, 120, 115, 110, 100, 90, 95, 80, 100, 110},
 							{100, 110, 120, 90, 80, 105, 110, 115, 99, 80, 95, 120, 115, 110, 100, 90, 95, 80, 100, 110}, 
 							{105, 120, 100, 90, 90, 115, 80, 125, 80, 80, 95, 120, 115, 110, 100, 90, 95, 80, 100, 110}};
-		double[] fa = {110, 50, 105, 90, 130, 90, 100, 90, 80, 110, 105, 70};
+		double[] fa = {1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000};
 		double[][] dpi = {{4, 5, 10}, {1, 11, 6}, {12, 8, 3}, {2, 9, 7}};
 		double[][] dni = {{1, 9, 8}, {2, 12, 5}, {11, 4, 7}, {6, 10, 3}};
 		
@@ -35,18 +35,19 @@ public class BaseModel {
 	public static void solveModel(int arc, int comm, int vert, double[][] Dik, double[] ua,
 			double[][] Cak, double[] fa, double[][] dpi, double[][] dni) {
 		try {
+			
 			IloCplex model = new IloCplex();
 			
-			IloNumVar[][] xak = new IloNumVar[arc][comm];
+			IloIntVar[][] xak = new IloIntVar[arc][comm];
 			for(int i = 0; i < arc; i++) {
 				for(int j = 0; j < comm; j++) {
-					xak[i][j] = model.numVar(0, Double.MAX_VALUE);	
+					xak[i][j] = model.intVar(0, Integer.MAX_VALUE);	
 				}
 			}
 			
-			IloNumVar[] ya = new IloNumVar[arc];
+			IloIntVar[] ya = new IloIntVar[arc];
 			for(int i = 0; i < arc; i++) {
-				ya[i] = model.numVar(0,1);
+				ya[i] = model.intVar(0,1);
 			}
 			
 			IloLinearNumExpr obj = model.linearNumExpr();
@@ -98,8 +99,8 @@ public class BaseModel {
 				for(int i = 0; i < arc; i++) {
 					for(int j = 0; j < comm; j++) {
 						System.out.println("xak[" + (i+1) + "] [" + (j+1) + "] = " + model.getValue(xak[i][j]));
-						System.out.println("Reduced cost " + (i+1) + " = " + model.getReducedCost(xak[i][j]));
 					}
+					System.out.println("path " + (i+1) + " is " + model.getValue(ya[i]));
 				}
 			}
 			else {
